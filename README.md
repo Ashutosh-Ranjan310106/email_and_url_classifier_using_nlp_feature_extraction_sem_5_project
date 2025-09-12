@@ -1,5 +1,4 @@
-# email_and_url_classifier_using_nlp_feature_extraction_sem_5_project
-team member name
-nikhil 
-nikhil
-ashutosh
+# Email And Url Classifier Using NLP Feature Extraction Sem 5 Project
+# Team Members
+- **Nikhil Chaudhry**  _(Team Leader)_
+- **Ashutosh Ranjan**
