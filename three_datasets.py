@@ -84,7 +84,7 @@ def filter_and_encode(df, name):
     # Encode labels
     df['label'] = df['label'].apply(lambda x: 1 if x in phishing_labels else 0)
 
-    print(f"\n✅ {name} cleaned: {len(df)} samples (Phishing={df['label'].sum()}, Benign={len(df)-df['label'].sum()})")
+    #print(f"\n✅ {name} cleaned: {len(df)} samples (Phishing={df['label'].sum()}, Benign={len(df)-df['label'].sum()})")
 
     return df
 
@@ -104,11 +104,12 @@ df4 = drop_dublicates(df4)
 def split_dataset(df, name):
     train_df, temp_df = train_test_split(df, test_size=0.2, random_state=42, stratify=df['label'])
     valid_df, test_df = train_test_split(temp_df, test_size=0.5, random_state=42, stratify=temp_df['label'])
-    print(f"\n📂 {name} split → Train: {len(train_df)}, Valid: {len(valid_df)}, Test: {len(test_df)}")
-    return train_df, valid_df, test_df
+    #print(f"\n📂 {name} split → Train: {len(train_df)}, Valid: {len(valid_df)}, Test: {len(test_df)}")
+    return (name, (train_df, valid_df, test_df))
 
 # -------------------- SUMMARIZER FUNCTION --------------------
-def summarize_dataset(name, train_df, valid_df, test_df):
+def summarize_dataset(name, splits):
+    train_df, valid_df, test_df = splits
     print(f"\n{'='*70}")
     print(f"📊 Summary for {name}")
     print(f"{'='*70}")
@@ -139,20 +140,18 @@ def summarize_dataset(name, train_df, valid_df, test_df):
 
 
 # -------------------- GENERATOR WRAPPERS --------------------
-def lazy_dataframe(train1, valid1, test1, train2, valid2, test2, train3, valid3, test3, train4, valid4, test4):
+def lazy_dataframe(*datasets):
     """Return a generator that yields the DataFrame only when iterated (lazy loading)."""
     def generator():
-        yield train1, valid1, test1
-        yield train2, valid2, test2
-        yield train3, valid3, test3
-        yield train4, valid4, test4
+        for name, splits in datasets:
+            yield name, splits
     return generator
 
 
 
 
 
-all_dataset = lazy_dataframe(*split_dataset(df1, "Dataset 1 (Malicious URLs)"), *split_dataset(df2, "Dataset 1 (Malicious URLs)"), *split_dataset(df3, "Dataset 1 (Malicious URLs)"), *split_dataset(df4, "Dataset 1 (Malicious URLs)")  )
+all_dataset = lazy_dataframe(split_dataset(df1, "Dataset 1 (Malicious URLs)"), split_dataset(df2, "Dataset 2 (ndarvind/phiusiil-phishing)"), split_dataset(df3, "Dataset 3 (kmack/Phishing_urls)"), split_dataset(df4, "Dataset 4 (grambeddings)")  )
 
 
 del df1, df2, df3, df4
@@ -166,8 +165,8 @@ if __name__ == "__main__":
     print("Dataset 1 Path:", dataset1_path)
     print("Dataset 2 Path:", dataset2_path)
 
-    summarize_dataset("Dataset 1 (Malicious URLs)", *next(gen))
-    summarize_dataset("Dataset 2 (PHIUSIIL Phishing URLs)", *next(gen))
-    summarize_dataset("Dataset 3 (Phishing URLs - HuggingFace)", *next(gen))
-    summarize_dataset("Dataset 4 (grambeddings)", *next(gen))
+    summarize_dataset(*next(gen))
+    summarize_dataset(*next(gen))
+    summarize_dataset(*next(gen))
+    summarize_dataset(*next(gen))
 

@@ -104,8 +104,68 @@ lstm layers
 50% dataset :- Epoch 6/6 | Train Loss: 0.1011, Train Acc: 0.9709 | Val Loss: 0.0864, Val Acc: 0.9740
 100% dataset :-Epoch 6/6 | Train Loss: 0.0862, Train Acc: 0.9732 | Val Loss: 0.0781, Val Acc: 0.9748
 
-cnn_lstm layers
 
+using dt model on extracted features of cnn_lstm model
+
+    Xgboost (128 input parms)
+        Accuracy: 0.9846410172932187
+        Precision: 0.9657971641952592
+        Recall: 0.9483473270273143
+        F1: 0.956992706992707
+        ROC AUC: 0.9704827646162547
+    random forest (128 input parms)
+        Accuracy: 0.9848325258057721
+        Precision: 0.9665403356794803
+        Recall: 0.9486661706876395
+        F1: 0.957519845526711
+        ROC AUC: 0.9707239468650307
+
+using xgboost on handcrafted features + cnn_lstm on url token based features and combinig both using diffrent models on predicted probablity of both 
+
+    using logistic regression(xgboost + cnn_lstm)
+        📘 TRAIN METRICS
+        Accuracy : 0.9845929926364272
+        Precision: 0.9956221828602698
+        Recall   : 0.9185321978503767
+        F1-score : 0.9555248427890263
+        ROC AUC  : 0.9987881565058316
+
+        📗 VALIDATION METRICS
+        Accuracy : 0.9793745331980006
+        Precision: 0.9922022684310019
+        Recall   : 0.8925496864704007
+        F1-score : 0.939741509539529
+        ROC AUC  : 0.9960990909211707
+
+    using simple mlp(xgboost + cnn_lstm)
+        📘 TRAIN METRICS
+        Accuracy : 0.9903909683720663
+        Precision: 0.9791669468615927
+        Recall   : 0.9672507938195007
+        F1-score : 0.9731723944339736
+        ROC AUC  : 0.9987848469855406
+
+        📗 VALIDATION METRICS
+        Accuracy : 0.9847367715494953
+        Precision: 0.9668256721595837
+        Recall   : 0.9478159209267722
+        F1-score : 0.9572264262330274
+        ROC AUC  : 0.9960148936912712
+
+    using xgboost(xgboost + cnn_lstm)
+        📘 TRAIN METRICS
+        Accuracy : 0.9845929926364272
+        Precision: 0.9956221828602698
+        Recall   : 0.9185321978503767
+        F1-score : 0.9555248427890263
+        ROC AUC  : 0.9987881565058316
+
+        📗 VALIDATION METRICS
+        Accuracy : 0.9793745331980006
+        Precision: 0.9922022684310019
+        Recall   : 0.8925496864704007
+        F1-score : 0.939741509539529
+        ROC AUC  : 0.9960990909211707
 
 
 activation layers
