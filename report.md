@@ -168,6 +168,49 @@ using xgboost on handcrafted features + cnn_lstm on url token based features and
         ROC AUC  : 0.9960990909211707
 
 
+
+
+lstm layers:- 
+    128 size bilstm layers
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.0836, Train Acc: 0.9743 | Val Loss: 0.0823, Val Acc: 0.9735
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.0591, Train Acc: 0.9812 | Val Loss: 0.0601, Val Acc: 0.9804
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.0474, Train Acc: 0.9849 | Val Loss: 0.0526, Val Acc: 0.9834
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.0387, Train Acc: 0.9875 | Val Loss: 0.0492, Val Acc: 0.9842
+    Epoch 1/1 Training CNN + transformer| Train Loss: 0.0344, Train Acc: 0.9891 | Val Loss: 0.0465, Val Acc: 0.9853
+
+optimizers:- 
+    nadams 3,5,7 cnn + 128 lstm:- 
+    ======================================================================
+    🚀 Training model on DATASET 1 (MALICIOUS URLS) dataset
+    ======================================================================
+    __________🧩 Using 100% of training data___________
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.0795, Train Acc: 0.9765 | Val Loss: 0.0786, Val Acc: 0.9755
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.0589, Train Acc: 0.9815 | Val Loss: 0.0595, Val Acc: 0.9806
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.0510, Train Acc: 0.9830 | Val Loss: 0.0589, Val Acc: 0.9815
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.0421, Train Acc: 0.9868 | Val Loss: 0.0508, Val Acc: 0.9840
+    Epoch 1/1 Training CNN + transformer| Train Loss: 0.0351, Train Acc: 0.9885 | Val Loss: 0.0483, Val Acc: 0.9848
+
+    nadams 3,5,7 cnn + 128 bilstm:- 
+
+    ======================================================================
+    🚀 Training model on DATASET 1 (MALICIOUS URLS) dataset
+    ======================================================================
+    __________🧩 Using 100% of training data___________
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.0852, Train Acc: 0.9732 | Val Loss: 0.0820, Val Acc: 0.9734
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.0672, Train Acc: 0.9797 | Val Loss: 0.0661, Val Acc: 0.9793
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.0470, Train Acc: 0.9849 | Val Loss: 0.0534, Val Acc: 0.9827
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.0404, Train Acc: 0.9867 | Val Loss: 0.0504, Val Acc: 0.9843
+    Epoch 1/1 Training CNN + transformer| Train Loss: 0.0353, Train Acc: 0.9882 | Val Loss: 0.0504, Val Acc: 0.9842
+    
+
+
+parrale model 
+    with 2 layers
+        Epoch 1/2 Training CNN + transformer| Train Loss: 0.1051, Train Acc: 0.9705 | Val Loss: 0.0885, Val Acc: 0.9717
+        Epoch 2/2 Training CNN + transformer| Train Loss: 0.0871, Train Acc: 0.9741 | Val Loss: 0.0767, Val Acc: 0.9746
+        Epoch 1/2 Training CNN + transformer| Train Loss: 0.0672, Train Acc: 0.9789 | Val Loss: 0.0647, Val Acc: 0.9791
+        Epoch 2/2 Training CNN + transformer| Train Loss: 0.0555, Train Acc: 0.9836 | Val Loss: 0.0571, Val Acc: 0.9840
+        Epoch 1/1 Training CNN + transformer| Train Loss: 0.0527, Train Acc: 0.9840 | Val Loss: 0.0567, Val Acc: 0.9831
 activation layers
 
 pooling layers
