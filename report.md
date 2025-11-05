@@ -218,3 +218,40 @@ pooling layers
 normalization layers
 
 
+Fedrative learing 
+
+    fed_avg model
+
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.2581, Train Acc: 0.9062 | Val Loss: 0.2210, Val Acc: 0.9062
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.3166, Train Acc: 0.8750 | Val Loss: 0.2132, Val Acc: 0.9062
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.2560, Train Acc: 0.9002 | Val Loss: 0.2479, Val Acc: 0.8974
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.2454, Train Acc: 0.9034 | Val Loss: 0.2359, Val Acc: 0.9044
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.3095, Train Acc: 0.8809 | Val Loss: 0.3187, Val Acc: 0.8705
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.2976, Train Acc: 0.8839 | Val Loss: 0.3187, Val Acc: 0.8683
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.2974, Train Acc: 0.8846 | Val Loss: 0.2855, Val Acc: 0.8898
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.2828, Train Acc: 0.8913 | Val Loss: 0.2661, Val Acc: 0.8891
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.2759, Train Acc: 0.8905 | Val Loss: 0.2695, Val Acc: 0.8868
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.2717, Train Acc: 0.8958 | Val Loss: 0.2662, Val Acc: 0.8914
+    global model loss 0.2370880860533915 accuracy 0.9039239482200647
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.3959, Train Acc: 0.8438 | Val Loss: 0.2600, Val Acc: 0.8125
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.2359, Train Acc: 0.8750 | Val Loss: 0.2576, Val Acc: 0.8438
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.2367, Train Acc: 0.9070 | Val Loss: 0.2303, Val Acc: 0.9056
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.2357, Train Acc: 0.9069 | Val Loss: 0.2295, Val Acc: 0.9058
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.2352, Train Acc: 0.9089 | Val Loss: 0.2471, Val Acc: 0.8951
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.2370, Train Acc: 0.9062 | Val Loss: 0.2554, Val Acc: 0.8906
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.2435, Train Acc: 0.9073 | Val Loss: 0.2319, Val Acc: 0.9000
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.2484, Train Acc: 0.9000 | Val Loss: 0.2451, Val Acc: 0.8945
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.2467, Train Acc: 0.9066 | Val Loss: 0.2286, Val Acc: 0.9009
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.2474, Train Acc: 0.9038 | Val Loss: 0.2360, Val Acc: 0.9021
+    global model loss 0.22715954780940292 accuracy 0.9059971682847896
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.2488, Train Acc: 0.9375 | Val Loss: 0.2096, Val Acc: 0.8750
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.2163, Train Acc: 0.8750 | Val Loss: 0.2068, Val Acc: 0.8750
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.2286, Train Acc: 0.9090 | Val Loss: 0.2284, Val Acc: 0.9079
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.2272, Train Acc: 0.9105 | Val Loss: 0.2274, Val Acc: 0.9096
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.2226, Train Acc: 0.9159 | Val Loss: 0.2236, Val Acc: 0.9018
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.2459, Train Acc: 0.9049 | Val Loss: 0.2304, Val Acc: 0.9018
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.2278, Train Acc: 0.9080 | Val Loss: 0.2253, Val Acc: 0.9008
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.2462, Train Acc: 0.9056 | Val Loss: 0.2370, Val Acc: 0.9039
+    Epoch 1/2 Training CNN + transformer| Train Loss: 0.2296, Train Acc: 0.9084 | Val Loss: 0.2317, Val Acc: 0.9002
+    Epoch 2/2 Training CNN + transformer| Train Loss: 0.2383, Train Acc: 0.9062 | Val Loss: 0.2359, Val Acc: 0.9040
+    global model loss 0.22339172233318047 accuracy 0.910548139158576
