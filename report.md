@@ -255,3 +255,12 @@ Fedrative learing
     Epoch 1/2 Training CNN + transformer| Train Loss: 0.2296, Train Acc: 0.9084 | Val Loss: 0.2317, Val Acc: 0.9002
     Epoch 2/2 Training CNN + transformer| Train Loss: 0.2383, Train Acc: 0.9062 | Val Loss: 0.2359, Val Acc: 0.9040
     global model loss 0.22339172233318047 accuracy 0.910548139158576
+
+
+
+
+
+
+
+
+max poolin hert accuracy but increase speed
