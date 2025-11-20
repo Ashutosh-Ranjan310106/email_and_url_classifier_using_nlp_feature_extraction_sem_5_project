@@ -23,32 +23,17 @@ df3_test = test_dataset.to_pandas()
 df3_valid = valid_dataset.to_pandas()
 df3 = pd.concat([df3_train, df3_test, df3_valid], ignore_index=True)
 
+dataset_4_path = kagglehub.dataset_download("taruntiwarihp/phishing-site-urls")
+df4 = pd.read_csv(os.path.join(dataset_4_path, [f for f in os.listdir(dataset_4_path) if f.endswith('.csv')][0]))
+df4.rename(columns={'URL':'url',"Label": "label"}, inplace=True)
+df4.label = df4.label.map({'bad':1, 'good':0})
+
+df5_train = pd.read_csv(r'Dataset\grambeddings_dataset_main\train.csv')
+df5_test = pd.read_csv(r'Dataset\grambeddings_dataset_main\test.csv')
 
 
-rows = []
-with open(r'Dataset\grambeddings_dataset_main\train.csv', encoding='utf-8') as f:
-    reader = csv.reader(f)
-    for row in reader:
-        # if more than 2 fields, merge all after the first one into URL
-        if len(row) > 2:
-            row = [row[0], ','.join(row[1:])]
-        rows.append(row)
+df5 = pd.concat([df5_train, df5_test], ignore_index=True)
 
-df4_train = pd.DataFrame(rows, columns=['label', 'url'])
-
-rows = []
-with open(r'Dataset\grambeddings_dataset_main\test.csv', encoding='utf-8') as f:
-    reader = csv.reader(f)
-    for row in reader:
-        # if more than 2 fields, merge all after the first one into URL
-        if len(row) > 2:
-            row = [row[0], ','.join(row[1:])]
-        rows.append(row)
-
-df4_test = pd.DataFrame(rows, columns=['label', 'url'])
-
-df4 = pd.concat([df4_train, df4_test], ignore_index=True)
-print(df4.head())
 # -------------------- STANDARDIZE COLUMN NAMES --------------------
 def normalize_columns(df):
     df.columns = df.columns.str.lower()
@@ -67,9 +52,9 @@ def normalize_columns(df):
 df1 = normalize_columns(df1)
 df2 = normalize_columns(df2)
 df3 = normalize_columns(df3)
-df4['label'][df4['label'] == 1] = 0 
-df4['label'][df4['label'] == 2] = 1 
-df4['label'] = df4['label'].astype(int)
+df5.label = df5.label.map({2:'bad', 1:'good'})
+df5.label = df5.label.map({'bad':1, 'good':0})
+df5['label'] = df5['label'].astype(int)
 # -------------------- FILTER ONLY BENIGN + PHISHING --------------------
 def filter_and_encode(df, name):
     # Lowercase labels for consistency
@@ -82,7 +67,7 @@ def filter_and_encode(df, name):
     df = df[df['label'].isin(phishing_labels + benign_labels)]
 
     # Encode labels
-    df['label'] = df['label'].apply(lambda x: 1 if x in phishing_labels else 0)
+    df.loc[:, 'label'] = df['label'].apply(lambda x: 1 if x in phishing_labels else 0)
 
     #print(f"\n✅ {name} cleaned: {len(df)} samples (Phishing={df['label'].sum()}, Benign={len(df)-df['label'].sum()})")
 
@@ -100,6 +85,7 @@ df1 = drop_dublicates(df1)
 df2 = drop_dublicates(df2)
 df3 = drop_dublicates(df3)
 df4 = drop_dublicates(df4)
+df5 = drop_dublicates(df5)
 # -------------------- SPLIT EACH DATASET --------------------
 def split_dataset(df, name):
     train_df, temp_df = train_test_split(df, test_size=0.2, random_state=42, stratify=df['label'])
@@ -151,20 +137,22 @@ def lazy_dataframe(*datasets):
 
 
 
-all_dataset = lazy_dataframe(split_dataset(df1, "Dataset 1 (Malicious URLs)"), split_dataset(df2, "Dataset 2 (ndarvind/phiusiil-phishing)"), split_dataset(df3, "Dataset 3 (kmack/Phishing_urls)"), split_dataset(df4, "Dataset 4 (grambeddings)")  )
+all_dataset = lazy_dataframe(split_dataset(df1, "Dataset 1 (Malicious URLs)"), split_dataset(df2, "Dataset 2 (ndarvind/phiusiil-phishing)"), split_dataset(df3, "Dataset 3 (kmack/Phishing_urls)"), split_dataset(df4, "Dataset 4 (kaggels/taruntiwarihp/phishing-site-urls)"), split_dataset(df5, "Dataset 5 (grambeddings)") )
 
 
-del df1, df2, df3, df4
+del df1, df2, df3, df4, df5
 del df3_test, df3_train, df3_valid
-del df4_test, df4_train
+del df5_test, df5_train
 del train_dataset, valid_dataset, test_dataset
 # -------------------- SUMMARIZE EACH --------------------
 if __name__ == "__main__":
+
     gen = all_dataset()
     print("✅ Paths Loaded Successfully:")
     print("Dataset 1 Path:", dataset1_path)
     print("Dataset 2 Path:", dataset2_path)
 
+    summarize_dataset(*next(gen))
     summarize_dataset(*next(gen))
     summarize_dataset(*next(gen))
     summarize_dataset(*next(gen))
