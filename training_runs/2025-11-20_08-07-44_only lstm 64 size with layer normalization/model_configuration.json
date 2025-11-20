@@ -1,0 +1,22 @@
+{
+    "run_name": "only lstm 64 size with layer normalization",
+    "timestamp": "2025-11-20 08:07:44",
+    "manual_notes": "",
+    "model_pipeline": "URLBinaryCNN(\n  (embeding_layer): ModuleDict(\n    (embeding): Embeding_layer(\n      (embedding): Embedding(97, 256)\n      (pos_embedding): Embedding(60, 256)\n      (final_norm): LayerNorm((256,), eps=1e-05, elementwise_affine=True)\n      (projection): Linear(in_features=256, out_features=64, bias=True)\n    )\n  )\n  (shared_layer): ModuleDict(\n    (bilstm): LSTM(64, 64, batch_first=True)\n    (layer_norm): LayerNorm((64,), eps=1e-05, elementwise_affine=True)\n    (fc1): Linear(in_features=3840, out_features=64, bias=True)\n    (relu1): ReLU()\n    (dropout1): Dropout(p=0.5, inplace=False)\n  )\n  (personal_layer): ModuleDict(\n    (fc2): Linear(in_features=64, out_features=64, bias=True)\n    (relu2): ReLU()\n    (dropout2): Dropout(p=0.5, inplace=False)\n    (head): Linear(in_features=64, out_features=1, bias=True)\n  )\n)",
+    "model_layers": {
+        "embedding_layer_params": 57152,
+        "shared_layer_params": 279232,
+        "personal_layer_params": 4225
+    },
+    "trainable_parameters": 340609,
+    "total_parameters": 340609,
+    "global_parameter_count": 14,
+    "personal_parameter_count": 4,
+    "global_optimizer": "NAdam (\nParameter Group 0\n    betas: (0.9, 0.999)\n    capturable: False\n    decoupled_weight_decay: False\n    differentiable: False\n    eps: 1e-08\n    foreach: None\n    lr: 0.001\n    maximize: False\n    momentum_decay: 0.004\n    weight_decay: 0.0001\n)",
+    "personal_optimizer": "NAdam (\nParameter Group 0\n    betas: (0.9, 0.999)\n    capturable: False\n    decoupled_weight_decay: False\n    differentiable: False\n    eps: 1e-08\n    foreach: None\n    lr: 0.001\n    maximize: False\n    momentum_decay: 0.004\n    weight_decay: 0.0001\n)",
+    "scheduler_global": "<torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x000001A942E1EB30>",
+    "scheduler_personal": "<torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x000001A942E1ECF0>",
+    "batch_size": 524,
+    "num_train_batches": 775,
+    "num_val_batches": 97
+}
