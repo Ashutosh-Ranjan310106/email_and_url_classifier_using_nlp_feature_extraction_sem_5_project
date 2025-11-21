@@ -88,8 +88,8 @@ df4 = drop_dublicates(df4)
 df5 = drop_dublicates(df5)
 # -------------------- SPLIT EACH DATASET --------------------
 def split_dataset(df, name):
-    train_df, temp_df = train_test_split(df, test_size=0.2, random_state=42, stratify=df['label'])
-    valid_df, test_df = train_test_split(temp_df, test_size=0.5, random_state=42, stratify=temp_df['label'])
+    train_df, test_df = train_test_split(df, test_size=0.2, random_state=42, stratify=df['label'])
+    train_df, valid_df = train_test_split(train_df, test_size=0.9, random_state=42, stratify=temp_df['label'])
     #print(f"\n📂 {name} split → Train: {len(train_df)}, Valid: {len(valid_df)}, Test: {len(test_df)}")
     return (name, (train_df, valid_df, test_df))
 
