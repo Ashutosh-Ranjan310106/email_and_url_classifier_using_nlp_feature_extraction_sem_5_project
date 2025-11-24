@@ -3,6 +3,8 @@
 - **Nikhil Chaudhry**  _(Team Leader)_
 - **Ashutosh Ranjan**
 - **Nikhil kumar**
+- -**Pankaj Kumar**
+- **Sapavath Hanumanth**
 
 
 1. A. I. Champa, M. F. Rabbi, and M. F. Zibran, “Why phishing emails escape detection: A closer look at the failure points,” in 12th Interna- tional Symposium on Digital Forensics and Security (ISDFS), 2024, pp. 1–6.
