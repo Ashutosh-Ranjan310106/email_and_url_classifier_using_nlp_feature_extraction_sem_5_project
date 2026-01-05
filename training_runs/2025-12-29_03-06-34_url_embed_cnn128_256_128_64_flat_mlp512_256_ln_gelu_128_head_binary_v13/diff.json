@@ -1,0 +1,102 @@
+{
+    "baseline": "url_embed_flat_mlp512_256_ln_gelu_128_head_binary_v12",
+    "version": "v13",
+    "type": "architecture_extension",
+    "model_family": "url_embedding_cnn_mlp_classifier",
+    "high_level_change": "Added CNN-based feature extractor before FC layers with increasing then decreasing channels",
+    "cnn_changes": {
+        "added": true,
+        "pattern": "expand_then_compress",
+        "layers": [
+            {
+                "layer": "Conv1d",
+                "name": "conv1",
+                "in_channels": "embed_dim",
+                "out_channels": 128,
+                "kernel_size": 3,
+                "padding": 1
+            },
+            {
+                "layer": "Conv1d",
+                "name": "conv2",
+                "in_channels": 128,
+                "out_channels": 256,
+                "kernel_size": 3,
+                "padding": 1
+            },
+            {
+                "layer": "Conv1d",
+                "name": "conv3",
+                "in_channels": 256,
+                "out_channels": 128,
+                "kernel_size": 3,
+                "padding": 1
+            },
+            {
+                "layer": "Conv1d",
+                "name": "conv4",
+                "in_channels": 128,
+                "out_channels": 64,
+                "kernel_size": 3,
+                "padding": 1
+            }
+        ],
+        "activation": "implicit (linear conv, non-linearity deferred to FC)",
+        "pooling": "none",
+        "reason": [
+            "capture local n-gram patterns in URL tokens",
+            "increase representational capacity",
+            "compress to compact channel size before flatten"
+        ]
+    },
+    "fc_adjustments": [
+        {
+            "layer": "fc1",
+            "change": "input_dim_updated",
+            "old": "maxlen * embed_dim",
+            "new": "maxlen * 64",
+            "reason": "CNN output channel size reduced to 64"
+        }
+    ],
+    "normalization_strategy": {
+        "cnn": "none",
+        "fc": "LayerNorm after fc1 and fc2",
+        "reason": "CNN kept raw to preserve spatial feature strength"
+    },
+    "architecture": {
+        "shared": [
+            "Embedding",
+            "Conv1d(64\u2192128)",
+            "Conv1d(128\u2192256)",
+            "Conv1d(256\u2192128)",
+            "Conv1d(128\u219264)",
+            "Flatten",
+            "Linear \u2192 LayerNorm \u2192 GELU (512)",
+            "Linear \u2192 LayerNorm \u2192 GELU (256)"
+        ],
+        "personal": [
+            "Linear(256\u2192128) \u2192 GELU",
+            "Linear(128\u21921) \u2192 Sigmoid"
+        ]
+    },
+    "forward_flow": [
+        "x = embedding(x)",
+        "x = conv1 \u2192 conv2 \u2192 conv3 \u2192 conv4",
+        "x = flatten(x)",
+        "x = fc1 \u2192 LN \u2192 GELU",
+        "x = fc2 \u2192 LN \u2192 GELU",
+        "x = fc3 \u2192 GELU",
+        "x = head \u2192 sigmoid"
+    ],
+    "expected_effects": {
+        "feature_quality": "improved local pattern extraction",
+        "accuracy": "expected increase vs flat MLP",
+        "overfitting_risk": "moderate (monitor)",
+        "compute_cost": "higher than v12"
+    },
+    "design_notes": [
+        "Expand-compress CNN is intentional (bottleneck-style)",
+        "Pooling skipped to preserve full sequence resolution",
+        "Good candidate for ablation: with/without pooling, with/without CNN"
+    ]
+}

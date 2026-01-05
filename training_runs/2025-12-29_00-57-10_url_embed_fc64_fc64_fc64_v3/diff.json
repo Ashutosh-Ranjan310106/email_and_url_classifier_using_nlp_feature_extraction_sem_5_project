@@ -1,0 +1,57 @@
+{
+    "baseline": "url_embed_fc128_fc64_binary_v2",
+    "type": "modify_model",
+    "model_family": "url_embedding_classifier",
+    "shared_layer": [
+        {
+            "op": "modify",
+            "name": "fc1",
+            "class": "Linear",
+            "from": {
+                "in_features": 8192,
+                "out_features": 128
+            },
+            "to": {
+                "in_features": 8192,
+                "out_features": 64
+            },
+            "reason": "remove feature expansion to reduce noise amplification"
+        }
+    ],
+    "personal_layer": [
+        {
+            "op": "modify",
+            "name": "fc2",
+            "class": "Linear",
+            "from": {
+                "in_features": 128,
+                "out_features": 64
+            },
+            "to": {
+                "in_features": 64,
+                "out_features": 64
+            },
+            "reason": "remove feature contraction stage"
+        }
+    ],
+    "forward": [
+        "x = embedding(x)",
+        "x = flatten(x, start_dim=1)",
+        "x = fc1(x)",
+        "x = fc2(x)",
+        "x = head(x)",
+        "x = sigmoid(x)"
+    ],
+    "summary": {
+        "changes": [
+            "removed intermediate feature expansion (128)",
+            "maintained flat 64-dim representation",
+            "reduced parameter-induced noise amplification",
+            "kept binary sigmoid head"
+        ]
+    },
+    "output": {
+        "task": "binary_classification",
+        "activation": "sigmoid"
+    }
+}

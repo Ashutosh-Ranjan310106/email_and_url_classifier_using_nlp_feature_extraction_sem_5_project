@@ -1,0 +1,46 @@
+{
+    "type": "architecture",
+    "change": "create_model",
+    "model_type": "SimpleCNN",
+    "details": {
+        "input_channels": 3,
+        "conv_layers": [
+            {
+                "layer": "conv1",
+                "out_channels": 128,
+                "kernel_size": 3,
+                "stride": 1,
+                "padding": 1,
+                "activation": "ReLU"
+            },
+            {
+                "layer": "conv2",
+                "out_channels": 64,
+                "kernel_size": 3,
+                "stride": 1,
+                "padding": 1,
+                "activation": "ReLU"
+            },
+            {
+                "layer": "conv3",
+                "out_channels": 64,
+                "kernel_size": 3,
+                "stride": 1,
+                "padding": 1,
+                "activation": "ReLU"
+            }
+        ],
+        "fc_layers": [
+            {
+                "layer": "fc1",
+                "out_features": 128,
+                "activation": "ReLU"
+            },
+            {
+                "layer": "fc2",
+                "out_features": 10,
+                "activation": null
+            }
+        ]
+    }
+}

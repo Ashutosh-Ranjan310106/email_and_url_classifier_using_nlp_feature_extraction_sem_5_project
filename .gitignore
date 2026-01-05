@@ -1,1 +1,4 @@
-
+training_runs/**/graphs/
+training_runs/**/*.safetensors
+**/__pycache__/
+**/*.pyc

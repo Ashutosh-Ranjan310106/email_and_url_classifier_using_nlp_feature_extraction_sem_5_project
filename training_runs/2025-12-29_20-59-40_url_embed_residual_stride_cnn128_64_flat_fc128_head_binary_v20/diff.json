@@ -1,0 +1,84 @@
+{
+    "baseline": "url_embed_residual_stride_cnn128_64_ds_flat_mlp256_128_ln_gelu_head_binary_v18",
+    "version": "v20",
+    "type": "aggressive_capacity_reduction",
+    "model_family": "url_embedding_residual_cnn_linear_head_classifier",
+    "high_level_change": "Collapsed MLP head into a single low-dimensional fully-connected layer",
+    "cnn_architecture": {
+        "blocks": [
+            {
+                "in": "embed_dim",
+                "out": 128,
+                "kernel": 3,
+                "stride": 2
+            },
+            {
+                "in": 128,
+                "out": 64,
+                "kernel": 3,
+                "stride": 2
+            }
+        ],
+        "removed_blocks": [
+            {
+                "in": 64,
+                "out": 32,
+                "stride": 2
+            }
+        ],
+        "sequence_reduction": "L \u2192 L/4",
+        "channel_strategy": "moderate_downscaling"
+    },
+    "flatten_projection": {
+        "old": "maxlen * 64 // 4 \u2192 256 \u2192 128",
+        "new": "maxlen * 64 // 4 \u2192 128",
+        "reason": [
+            "remove redundant dense layers",
+            "force CNN to carry representational burden",
+            "minimize parameter count"
+        ]
+    },
+    "mlp_changes": {
+        "removed": [
+            "intermediate fc layers",
+            "second normalization layer",
+            "additional GELU activations"
+        ],
+        "current_pipeline": [
+            "Linear \u2192 LayerNorm \u2192 GELU (128)",
+            "Linear \u2192 Sigmoid (1)"
+        ]
+    },
+    "normalization_strategy": {
+        "cnn": "none (residual stability)",
+        "fc": [
+            "LayerNorm after single FC only"
+        ]
+    },
+    "parameter_effect": {
+        "total_params": "very low",
+        "memory": "minimal",
+        "training_speed": "very fast",
+        "risk": "higher bias, lowest variance"
+    },
+    "design_intuition": [
+        "CNN should fully encode discriminative patterns",
+        "Dense layers act purely as a linear decision surface",
+        "Useful to test if deeper MLP is truly needed",
+        "Strong regularization via architectural simplicity"
+    ],
+    "forward_flow": [
+        "embedding",
+        "permute (B,L,C \u2192 B,C,L)",
+        "ResidualConvBlock(stride=2) \u00d7 2",
+        "permute (B,C,L \u2192 B,L,C)",
+        "flatten",
+        "fc1 \u2192 LayerNorm \u2192 GELU",
+        "head \u2192 sigmoid"
+    ],
+    "recommended_use": [
+        "hard ablation baseline",
+        "overfitting diagnostic",
+        "compare against GAP and attention pooling models"
+    ]
+}

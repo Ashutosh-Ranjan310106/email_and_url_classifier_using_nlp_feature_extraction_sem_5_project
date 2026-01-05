@@ -1,0 +1,70 @@
+{
+    "baseline": "url_embed_flat_mlp512_256_do05_gelu_128_head_binary_v8",
+    "type": "modify_model",
+    "model_family": "url_embedding_classifier",
+    "shared_layer": [
+        {
+            "op": "modify",
+            "name": "dropout1",
+            "from": {
+                "p": 0.5
+            },
+            "to": {
+                "p": 0.25
+            },
+            "reason": "reduce regularization strength to improve feature retention"
+        },
+        {
+            "op": "modify",
+            "name": "dropout2",
+            "from": {
+                "p": 0.5
+            },
+            "to": {
+                "p": 0.25
+            },
+            "reason": "allow smoother gradient flow in mid-level representations"
+        }
+    ],
+    "personal_layer": [
+        {
+            "op": "modify",
+            "name": "dropout3",
+            "from": {
+                "p": 0.5
+            },
+            "to": {
+                "p": 0.25
+            },
+            "reason": "avoid underfitting in final decision layers"
+        }
+    ],
+    "forward": [
+        "x = embedding(x)",
+        "x = flatten(x, start_dim=1)",
+        "x = fc1(x) -> gelu -> dropout(p=0.25)",
+        "x = fc2(x) -> layer_norm -> gelu -> dropout(p=0.25)",
+        "x = fc3(x) -> gelu -> dropout(p=0.25)",
+        "x = head(x)",
+        "x = sigmoid(x)"
+    ],
+    "summary": {
+        "changes": [
+            "globally reduced dropout probability from 0.5 to 0.25",
+            "kept architecture and non-linearities unchanged"
+        ],
+        "expected_effect": [
+            "faster convergence",
+            "less underfitting",
+            "slightly higher variance but better recall"
+        ]
+    },
+    "regularization": {
+        "dropout_rate": 0.25,
+        "layer_norm": "after fc2 only"
+    },
+    "output": {
+        "task": "binary_classification",
+        "activation": "sigmoid"
+    }
+}

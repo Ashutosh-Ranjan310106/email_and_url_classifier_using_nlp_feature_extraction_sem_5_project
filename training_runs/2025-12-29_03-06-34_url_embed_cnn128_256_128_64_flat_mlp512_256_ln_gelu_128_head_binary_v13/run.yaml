@@ -1,0 +1,31 @@
+run:
+  name: url_embed_cnn128_256_128_64_flat_mlp512_256_ln_gelu_128_head_binary_v13
+  timestamp: '2025-12-29T03:06:34.572981'
+  device: cuda
+training:
+  batch_size: 1024
+  num_train_batches: 397
+  num_val_batches: 50
+  dataset_name: Dataset 4 (kaggels/taruntiwarihp/phishing-site-urls)
+optimizers:
+  global:
+    type: NAdam
+    lr: 0.001
+    betas: &id001
+    - 0.9
+    - 0.999
+    weight_decay: 0.0001
+  personal:
+    type: NAdam
+    lr: 0.001
+    betas: *id001
+    weight_decay: 0.0001
+schedulers:
+  global:
+    type: ReduceLROnPlateau
+    factor: 0.5
+    patience: 3
+  personal:
+    type: ReduceLROnPlateau
+    factor: 0.5
+    patience: 3

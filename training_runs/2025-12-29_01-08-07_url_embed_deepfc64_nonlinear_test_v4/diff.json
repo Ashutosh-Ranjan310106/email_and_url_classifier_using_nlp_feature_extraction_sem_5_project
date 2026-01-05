@@ -1,0 +1,60 @@
+{
+    "baseline": "url_embed_fc64_flat_binary_v3",
+    "type": "modify_model",
+    "model_family": "url_embedding_classifier",
+    "shared_layer": [
+        {
+            "op": "add",
+            "name": "fc2",
+            "class": "Linear",
+            "params": {
+                "in_features": 64,
+                "out_features": 64
+            },
+            "reason": "increase depth to add non-linearity"
+        }
+    ],
+    "personal_layer": [
+        {
+            "op": "add",
+            "name": "fc3",
+            "class": "Linear",
+            "params": {
+                "in_features": 64,
+                "out_features": 64
+            },
+            "reason": "increase non-linear capacity before head"
+        },
+        {
+            "op": "add",
+            "name": "fc4",
+            "class": "Linear",
+            "params": {
+                "in_features": 64,
+                "out_features": 64
+            },
+            "reason": "deeper personalization stack for smoother decision boundary"
+        }
+    ],
+    "forward": [
+        "x = embedding(x)",
+        "x = flatten(x, start_dim=1)",
+        "x = fc1(x)",
+        "x = fc2(x)",
+        "x = fc3(x)",
+        "x = fc4(x)",
+        "x = head(x)",
+        "x = sigmoid(x)"
+    ],
+    "summary": {
+        "changes": [
+            "added multiple FC layers (64-dim) to increase non-linearity",
+            "kept flat feature width to avoid noise amplification",
+            "aimed at smoother loss/ROC curves via deeper MLP head"
+        ]
+    },
+    "output": {
+        "task": "binary_classification",
+        "activation": "sigmoid"
+    }
+}

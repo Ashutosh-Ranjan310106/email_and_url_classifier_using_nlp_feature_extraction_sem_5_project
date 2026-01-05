@@ -1,0 +1,39 @@
+{
+    "baseline": "url_embed_flat_mlp512_256_128_64_binary_v5",
+    "type": "modify_model",
+    "model_family": "url_embedding_classifier",
+    "personal_layer": [
+        {
+            "op": "removed",
+            "name": "fc4",
+            "class": "Linear",
+            "params": {
+                "in_features": 128,
+                "out_features": 64
+            },
+            "reason": "reduce number of features and over fitting"
+        }
+    ],
+    "forward": [
+        "x = embedding(x)",
+        "x = flatten(x, start_dim=1)",
+        "x = fc1(x)",
+        "x = fc2(x)",
+        "x = fc3(x)",
+        "x = fc4(x)",
+        "x = head(x)",
+        "x = sigmoid(x)"
+    ],
+    "summary": {
+        "changes": [
+            "expanded MLP width (512 \u2192 256 \u2192 128 \u2192 64)",
+            "removed convolutional stack to isolate embedding-only behavior",
+            "aimed at smoother optimization and richer decision boundaries"
+        ],
+        "ablation_goal": "measure effect of deep MLP depth vs shallow FC head"
+    },
+    "output": {
+        "task": "binary_classification",
+        "activation": "sigmoid"
+    }
+}

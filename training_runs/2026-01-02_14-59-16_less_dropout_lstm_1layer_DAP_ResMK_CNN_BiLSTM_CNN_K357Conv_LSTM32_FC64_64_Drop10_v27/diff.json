@@ -1,0 +1,14 @@
+{
+    "base_version": "v25",
+    "archeture": {
+        "add": [
+            "added dual attension pooling"
+        ],
+        "removed": [
+            "maxpooling pooling"
+        ]
+    },
+    "optimizer": {
+        "replaced": "nadam replaced with adamw"
+    }
+}

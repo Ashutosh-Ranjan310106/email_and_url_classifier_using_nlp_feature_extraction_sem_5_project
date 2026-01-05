@@ -1,6 +1,36 @@
 import os
 import json
 import matplotlib.pyplot as plt
+import pickle
+import numpy as np
+from collections import defaultdict
+
+def merge_layer_history(weight_history, merge_depth=2):
+    """
+    weight_history:
+      layer_name -> {epoch -> np.array}
+
+    Returns:
+      merged_layer -> {epoch -> np.array}
+    """
+
+    merged = defaultdict(lambda: defaultdict(list))
+
+    for layer_name, epoch_data in weight_history.items():
+        merged_name = ".".join(layer_name.split(".")[:merge_depth])
+
+        for epoch, weights in epoch_data.items():
+            merged[merged_name][epoch].append(weights)
+
+    # concatenate weights per epoch
+    final_merged = {}
+    for layer, epoch_dict in merged.items():
+        final_merged[layer] = {
+            epoch: np.concatenate(w_list)
+            for epoch, w_list in epoch_dict.items()
+        }
+
+    return final_merged
 
 def plot_run(run_folder):
     """
@@ -182,3 +212,68 @@ def plot_run(run_folder):
     )
 
     print("\n✅ All available graphs saved in:", graphs_folder)
+
+
+
+        # ============================
+    # 3. MERGED LAYER WEIGHT UPDATES
+    # ============================
+
+    weight_history_path = os.path.join(run_folder, "weight_history.pkl")
+    layer_updates_folder = os.path.join(run_folder, "layer_updates")
+    os.makedirs(layer_updates_folder, exist_ok=True)
+
+    MERGE_DEPTH = 2   # 🔥 change this if needed
+
+    if not os.path.exists(weight_history_path):
+        print("⚠ weight_history.pkl not found — skipping layer box plots")
+        return
+
+    try:
+        with open(weight_history_path, "rb") as f:
+            weight_history = pickle.load(f)
+    except Exception as e:
+        print("❌ Failed to load weight_history.pkl:", e)
+        return
+
+    # 🔥 MERGE LAYERS HERE
+    merged_history = merge_layer_history(
+        weight_history,
+        merge_depth=MERGE_DEPTH
+    )
+
+    print(f"\n📦 Generating merged layer box plots (depth={MERGE_DEPTH})...\n")
+
+    for layer_name, epoch_data in merged_history.items():
+        try:
+            epochs = sorted(epoch_data.keys())
+            if len(epochs) < 2:
+                print(f"⚠ Skipped {layer_name} — not enough epochs")
+                continue
+
+            data = [epoch_data[e] for e in epochs]
+
+            plt.figure(figsize=(max(6, len(epochs)), 5))
+            plt.boxplot(data, labels=epochs, showmeans=True)
+
+            plt.title(
+                f"Weight Distribution Over Epochs\n"
+                f"{layer_name}  (merged depth={MERGE_DEPTH})"
+            )
+            plt.xlabel("Epoch")
+            plt.ylabel("Weight Value")
+            plt.grid(True, axis="y")
+            plt.tight_layout()
+
+            safe_layer_name = layer_name.replace(".", "_").replace("/", "_")
+            filename = f"{safe_layer_name}_merged_boxplot.png"
+
+            plt.savefig(os.path.join(layer_updates_folder, filename))
+            plt.close()
+
+            print(f"   ✔ Saved {filename}")
+
+        except Exception as e:
+            print(f"❌ Error plotting {layer_name}:", e)
+
+    print("\n✅ Merged layer weight box plots saved in:", layer_updates_folder)

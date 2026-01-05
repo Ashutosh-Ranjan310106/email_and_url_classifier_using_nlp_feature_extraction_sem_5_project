@@ -1,0 +1,749 @@
+[
+    {
+    "model_name":"only_cnn_3layers()",
+    "shared_layers": {
+        "embedding": {
+        "type": "Embedding_layer",
+        "params": {
+            "vocab_size": 97,
+            "max_len": 128,
+            "d_model": 128,
+            "n_out": 64
+        }
+        },
+
+        "conv1": {
+        "type": "ResidualConvBlock",
+        "params": {
+            "in_ch": 64,
+            "out_ch": 64,
+            "kernel_sizes": [3, 5, 7],
+            "reduction": 32
+        }
+        },
+
+        "conv2": {
+        "type": "ResidualConvBlock",
+        "params": {
+            "in_ch": 64,
+            "out_ch": 32,
+            "kernel_sizes": [3, 5, 7],
+            "reduction": 16
+        }
+        },
+
+        "bilstm": {
+        "type": "LSTM",
+        "params": {
+            "input_size": 32,
+            "hidden_size": 32,
+            "num_layers": 1,
+            "batch_first": true,
+            "bidirectional": true
+        }
+        },
+
+        "layer_norm": {
+        "type": "LayerNorm",
+        "params": { "normalized_shape": 64 }
+        },
+
+        "gelu1": { "type": "GELU" },
+
+        "postconv": {
+        "type": "Conv1d",
+        "params": {
+            "in_channels": 64,
+            "out_channels": 128,
+            "kernel_size": 3,
+            "stride": 2,
+            "padding": 1
+        }
+        },
+
+        "fc1": {
+        "type": "Linear",
+        "params": {
+            "in_features": 8192,
+            "out_features": 64
+        }
+        },
+
+        "gelu2": { "type": "GELU" },
+        "dropout1": {
+        "type": "Dropout",
+        "params": { "p": 0.5 }
+        }
+    },
+
+    "personal_layers": {
+        "fc2": {
+        "type": "Linear",
+        "params": {
+            "in_features": 64,
+            "out_features": 64
+        }
+        },
+        "gelu3": { "type": "GELU" },
+        "dropout2": {
+        "type": "Dropout",
+        "params": { "p": 0.5 }
+        },
+        "head": {
+        "type": "Linear",
+        "params": {
+            "in_features": 64,
+            "out_features": 1
+        }
+        }
+    },
+
+        "forward_flow": [
+            "embedding",
+            "permute:0,2,1",
+            "conv1",
+            "conv2",
+            "permute:0,2,1",
+            "bilstm",
+            "layer_norm",
+            "gelu1",
+            "permute:0,2,1",
+            "postconv",
+            "permute:0,2,1",
+            "flatten",
+            "fc1",
+            "gelu2",
+            "dropout1",
+            "fc2",
+            "gelu3",
+            "dropout2",
+            "head",
+            "sigmoid"
+        ]
+    },
+
+
+        {
+    "model_name":"model1",
+    "shared_layers": {
+        "embedding": {
+        "type": "Embedding_layer",
+        "params": {
+            "vocab_size": 97,
+            "max_len": 128,
+            "d_model": 128,
+            "n_out": 64
+        }
+        },
+
+        "conv1": {
+        "type": "ResidualConvBlock",
+        "params": {
+            "in_ch": 64,
+            "out_ch": 64,
+            "kernel_sizes": [3, 5, 7],
+            "reduction": 32
+        }
+        },
+
+        "conv2": {
+        "type": "ResidualConvBlock",
+        "params": {
+            "in_ch": 64,
+            "out_ch": 32,
+            "kernel_sizes": [3, 5, 7],
+            "reduction": 16
+        }
+        },
+
+        "bilstm": {
+        "type": "LSTM",
+        "params": {
+            "input_size": 32,
+            "hidden_size": 32,
+            "num_layers": 1,
+            "batch_first": true,
+            "bidirectional": true
+        }
+        },
+
+        "layer_norm": {
+        "type": "LayerNorm",
+        "params": { "normalized_shape": 64 }
+        },
+
+        "gelu1": { "type": "GELU" },
+
+        "postconv": {
+        "type": "Conv1d",
+        "params": {
+            "in_channels": 64,
+            "out_channels": 128,
+            "kernel_size": 3,
+            "stride": 2,
+            "padding": 1
+        }
+        },
+
+        "fc1": {
+        "type": "Linear",
+        "params": {
+            "in_features": 8192,
+            "out_features": 64
+        }
+        },
+
+        "gelu2": { "type": "GELU" },
+        "dropout1": {
+        "type": "Dropout",
+        "params": { "p": 0.5 }
+        }
+    },
+
+    "personal_layers": {
+        "fc2": {
+        "type": "Linear",
+        "params": {
+            "in_features": 64,
+            "out_features": 64
+        }
+        },
+        "gelu3": { "type": "GELU" },
+        "dropout2": {
+        "type": "Dropout",
+        "params": { "p": 0.5 }
+        },
+        "head": {
+        "type": "Linear",
+        "params": {
+            "in_features": 64,
+            "out_features": 1
+        }
+        }
+    },
+
+        "forward_flow": [
+            "embedding",
+            "permute:0,2,1",
+            "conv1",
+            "conv2",
+            "permute:0,2,1",
+            "bilstm",
+            "layer_norm",
+            "gelu1",
+            "permute:0,2,1",
+            "postconv",
+            "permute:0,2,1",
+            "flatten",
+            "fc1",
+            "gelu2",
+            "dropout1",
+            "fc2",
+            "gelu3",
+            "dropout2",
+            "head",
+            "sigmoid"
+        ]
+    },
+
+
+
+
+        {
+    "model_name":"model1",
+    "shared_layers": {
+        "embedding": {
+        "type": "Embedding_layer",
+        "params": {
+            "vocab_size": 97,
+            "max_len": 128,
+            "d_model": 128,
+            "n_out": 64
+        }
+        },
+
+        "conv1": {
+        "type": "ResidualConvBlock",
+        "params": {
+            "in_ch": 64,
+            "out_ch": 64,
+            "kernel_sizes": [3, 5, 7],
+            "reduction": 32
+        }
+        },
+
+        "conv2": {
+        "type": "ResidualConvBlock",
+        "params": {
+            "in_ch": 64,
+            "out_ch": 32,
+            "kernel_sizes": [3, 5, 7],
+            "reduction": 16
+        }
+        },
+
+        "bilstm": {
+        "type": "LSTM",
+        "params": {
+            "input_size": 32,
+            "hidden_size": 32,
+            "num_layers": 1,
+            "batch_first": true,
+            "bidirectional": true
+        }
+        },
+
+        "layer_norm": {
+        "type": "LayerNorm",
+        "params": { "normalized_shape": 64 }
+        },
+
+        "gelu1": { "type": "GELU" },
+
+        "postconv": {
+        "type": "Conv1d",
+        "params": {
+            "in_channels": 64,
+            "out_channels": 128,
+            "kernel_size": 3,
+            "stride": 2,
+            "padding": 1
+        }
+        },
+
+        "fc1": {
+        "type": "Linear",
+        "params": {
+            "in_features": 8192,
+            "out_features": 64
+        }
+        },
+
+        "gelu2": { "type": "GELU" },
+        "dropout1": {
+        "type": "Dropout",
+        "params": { "p": 0.5 }
+        }
+    },
+
+    "personal_layers": {
+        "fc2": {
+        "type": "Linear",
+        "params": {
+            "in_features": 64,
+            "out_features": 64
+        }
+        },
+        "gelu3": { "type": "GELU" },
+        "dropout2": {
+        "type": "Dropout",
+        "params": { "p": 0.5 }
+        },
+        "head": {
+        "type": "Linear",
+        "params": {
+            "in_features": 64,
+            "out_features": 1
+        }
+        }
+    },
+
+        "forward_flow": [
+            "embedding",
+            "permute:0,2,1",
+            "conv1",
+            "conv2",
+            "permute:0,2,1",
+            "bilstm",
+            "layer_norm",
+            "gelu1",
+            "permute:0,2,1",
+            "postconv",
+            "permute:0,2,1",
+            "flatten",
+            "fc1",
+            "gelu2",
+            "dropout1",
+            "fc2",
+            "gelu3",
+            "dropout2",
+            "head",
+            "sigmoid"
+        ]
+    },
+
+
+
+
+        {
+    "model_name":"model1",
+    "shared_layers": {
+        "embedding": {
+        "type": "Embedding_layer",
+        "params": {
+            "vocab_size": 97,
+            "max_len": 128,
+            "d_model": 128,
+            "n_out": 64
+        }
+        },
+
+        "conv1": {
+        "type": "ResidualConvBlock",
+        "params": {
+            "in_ch": 64,
+            "out_ch": 64,
+            "kernel_sizes": [3, 5, 7],
+            "reduction": 32
+        }
+        },
+
+        "conv2": {
+        "type": "ResidualConvBlock",
+        "params": {
+            "in_ch": 64,
+            "out_ch": 32,
+            "kernel_sizes": [3, 5, 7],
+            "reduction": 16
+        }
+        },
+
+        "bilstm": {
+        "type": "LSTM",
+        "params": {
+            "input_size": 32,
+            "hidden_size": 32,
+            "num_layers": 1,
+            "batch_first": true,
+            "bidirectional": true
+        }
+        },
+
+        "layer_norm": {
+        "type": "LayerNorm",
+        "params": { "normalized_shape": 64 }
+        },
+
+        "gelu1": { "type": "GELU" },
+
+        "postconv": {
+        "type": "Conv1d",
+        "params": {
+            "in_channels": 64,
+            "out_channels": 128,
+            "kernel_size": 3,
+            "stride": 2,
+            "padding": 1
+        }
+        },
+
+        "fc1": {
+        "type": "Linear",
+        "params": {
+            "in_features": 8192,
+            "out_features": 64
+        }
+        },
+
+        "gelu2": { "type": "GELU" },
+        "dropout1": {
+        "type": "Dropout",
+        "params": { "p": 0.5 }
+        }
+    },
+
+    "personal_layers": {
+        "fc2": {
+        "type": "Linear",
+        "params": {
+            "in_features": 64,
+            "out_features": 64
+        }
+        },
+        "gelu3": { "type": "GELU" },
+        "dropout2": {
+        "type": "Dropout",
+        "params": { "p": 0.5 }
+        },
+        "head": {
+        "type": "Linear",
+        "params": {
+            "in_features": 64,
+            "out_features": 1
+        }
+        }
+    },
+
+        "forward_flow": [
+            "embedding",
+            "permute:0,2,1",
+            "conv1",
+            "conv2",
+            "permute:0,2,1",
+            "bilstm",
+            "layer_norm",
+            "gelu1",
+            "permute:0,2,1",
+            "postconv",
+            "permute:0,2,1",
+            "flatten",
+            "fc1",
+            "gelu2",
+            "dropout1",
+            "fc2",
+            "gelu3",
+            "dropout2",
+            "head",
+            "sigmoid"
+        ]
+    },
+
+
+
+
+        {
+    "model_name":"model1",
+    "shared_layers": {
+        "embedding": {
+        "type": "Embedding_layer",
+        "params": {
+            "vocab_size": 97,
+            "max_len": 128,
+            "d_model": 128,
+            "n_out": 64
+        }
+        },
+
+        "conv1": {
+        "type": "ResidualConvBlock",
+        "params": {
+            "in_ch": 64,
+            "out_ch": 64,
+            "kernel_sizes": [3, 5, 7],
+            "reduction": 32
+        }
+        },
+
+        "conv2": {
+        "type": "ResidualConvBlock",
+        "params": {
+            "in_ch": 64,
+            "out_ch": 32,
+            "kernel_sizes": [3, 5, 7],
+            "reduction": 16
+        }
+        },
+
+        "bilstm": {
+        "type": "LSTM",
+        "params": {
+            "input_size": 32,
+            "hidden_size": 32,
+            "num_layers": 1,
+            "batch_first": true,
+            "bidirectional": true
+        }
+        },
+
+        "layer_norm": {
+        "type": "LayerNorm",
+        "params": { "normalized_shape": 64 }
+        },
+
+        "gelu1": { "type": "GELU" },
+
+        "postconv": {
+        "type": "Conv1d",
+        "params": {
+            "in_channels": 64,
+            "out_channels": 128,
+            "kernel_size": 3,
+            "stride": 2,
+            "padding": 1
+        }
+        },
+
+        "fc1": {
+        "type": "Linear",
+        "params": {
+            "in_features": 8192,
+            "out_features": 64
+        }
+        },
+
+        "gelu2": { "type": "GELU" },
+        "dropout1": {
+        "type": "Dropout",
+        "params": { "p": 0.5 }
+        }
+    },
+
+    "personal_layers": {
+        "fc2": {
+        "type": "Linear",
+        "params": {
+            "in_features": 64,
+            "out_features": 64
+        }
+        },
+        "gelu3": { "type": "GELU" },
+        "dropout2": {
+        "type": "Dropout",
+        "params": { "p": 0.5 }
+        },
+        "head": {
+        "type": "Linear",
+        "params": {
+            "in_features": 64,
+            "out_features": 1
+        }
+        }
+    },
+
+        "forward_flow": [
+            "embedding",
+            "permute:0,2,1",
+            "conv1",
+            "conv2",
+            "permute:0,2,1",
+            "bilstm",
+            "layer_norm",
+            "gelu1",
+            "permute:0,2,1",
+            "postconv",
+            "permute:0,2,1",
+            "flatten",
+            "fc1",
+            "gelu2",
+            "dropout1",
+            "fc2",
+            "gelu3",
+            "dropout2",
+            "head",
+            "sigmoid"
+        ]
+    },
+
+        {
+    "model_name":"model1",
+    "shared_layers": {
+        "embedding": {
+        "type": "Embedding_layer",
+        "params": {
+            "vocab_size": 97,
+            "max_len": 128,
+            "d_model": 128,
+            "n_out": 64
+        }
+        },
+
+        "conv1": {
+        "type": "ResidualConvBlock",
+        "params": {
+            "in_ch": 64,
+            "out_ch": 64,
+            "kernel_sizes": [3, 5, 7],
+            "reduction": 32
+        }
+        },
+
+        "conv2": {
+        "type": "ResidualConvBlock",
+        "params": {
+            "in_ch": 64,
+            "out_ch": 32,
+            "kernel_sizes": [3, 5, 7],
+            "reduction": 16
+        }
+        },
+
+        "bilstm": {
+        "type": "LSTM",
+        "params": {
+            "input_size": 32,
+            "hidden_size": 32,
+            "num_layers": 1,
+            "batch_first": true,
+            "bidirectional": true
+        }
+        },
+
+        "layer_norm": {
+        "type": "LayerNorm",
+        "params": { "normalized_shape": 64 }
+        },
+
+        "gelu1": { "type": "GELU" },
+
+        "postconv": {
+        "type": "Conv1d",
+        "params": {
+            "in_channels": 64,
+            "out_channels": 128,
+            "kernel_size": 3,
+            "stride": 2,
+            "padding": 1
+        }
+        },
+
+        "fc1": {
+        "type": "Linear",
+        "params": {
+            "in_features": 8192,
+            "out_features": 64
+        }
+        },
+
+        "gelu2": { "type": "GELU" },
+        "dropout1": {
+        "type": "Dropout",
+        "params": { "p": 0.5 }
+        }
+    },
+
+    "personal_layers": {
+        "fc2": {
+        "type": "Linear",
+        "params": {
+            "in_features": 64,
+            "out_features": 64
+        }
+        },
+        "gelu3": { "type": "GELU" },
+        "dropout2": {
+        "type": "Dropout",
+        "params": { "p": 0.5 }
+        },
+        "head": {
+        "type": "Linear",
+        "params": {
+            "in_features": 64,
+            "out_features": 1
+        }
+        }
+    },
+
+        "forward_flow": [
+            "embedding",
+            "permute:0,2,1",
+            "conv1",
+            "conv2",
+            "permute:0,2,1",
+            "bilstm",
+            "layer_norm",
+            "gelu1",
+            "permute:0,2,1",
+            "postconv",
+            "permute:0,2,1",
+            "flatten",
+            "fc1",
+            "gelu2",
+            "dropout1",
+            "fc2",
+            "gelu3",
+            "dropout2",
+            "head",
+            "sigmoid"
+        ]
+    }
+]

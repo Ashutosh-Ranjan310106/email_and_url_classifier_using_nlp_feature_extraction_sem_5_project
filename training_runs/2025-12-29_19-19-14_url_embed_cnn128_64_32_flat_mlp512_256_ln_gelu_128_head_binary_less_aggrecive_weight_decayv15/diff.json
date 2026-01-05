@@ -1,0 +1,20 @@
+{
+    "baseline": "url_embed_cnn128_256_128_64_flat_mlp512_256_ln_gelu_128_head_binary_v14",
+    "version": "v15",
+    "type": "architecture_refinement",
+    "model_family": "url_embedding_cnn_mlp_classifier",
+    "high_level_change": "reduce weight decay to reduce underfitting",
+    "global_weight_decay": "0.0001 -> 0.000001",
+    "personal_weight_decay": "0.0001 -> 0.000003",
+    "expected_effects": {
+        "feature_selectivity": "high",
+        "overfitting_risk": "lower than v13",
+        "generalization": "improved on noisy URLs",
+        "compute_cost": "lower than expand-compress CNN"
+    },
+    "design_notes": [
+        "Acts like a learned feature selector",
+        "Channel bottleneck substitutes explicit pooling",
+        "Good candidate for comparison against GlobalAvgPool variants"
+    ]
+}

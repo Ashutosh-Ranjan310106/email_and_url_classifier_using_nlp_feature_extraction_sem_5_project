@@ -1,0 +1,93 @@
+{
+    "baseline": "url_embed_residual_stride_cnn128_64_ds_flat_mlp256_128_ln_gelu_head_binary_v18",
+    "version": "v19",
+    "type": "architectural_simplification",
+    "model_family": "url_embedding_residual_cnn_gap_mlp_classifier",
+    "high_level_change": "Replaced flatten-based projection with temporal Global Average Pooling (GAP)",
+    "cnn_architecture": {
+        "blocks": [
+            {
+                "in": "embed_dim",
+                "out": 128,
+                "kernel": 3,
+                "stride": 2
+            },
+            {
+                "in": 128,
+                "out": 64,
+                "kernel": 3,
+                "stride": 2
+            }
+        ],
+        "removed_blocks": [
+            {
+                "in": 64,
+                "out": 32,
+                "stride": 2
+            }
+        ],
+        "sequence_reduction": "L \u2192 L/4",
+        "channel_strategy": "moderate_downscaling"
+    },
+    "pooling_change": {
+        "old": "flatten (length-dependent)",
+        "new": "global_average_pooling_1d (temporal)",
+        "gap_dimension": "time / sequence length",
+        "output_shape": "B \u00d7 64",
+        "reason": [
+            "remove dependency on maxlen",
+            "improve robustness to variable-length URLs",
+            "reduce parameter count drastically"
+        ]
+    },
+    "projection_change": {
+        "old": "flatten \u2192 Linear(maxlen*64//4 \u2192 256)",
+        "new": "GAP \u2192 Linear(64 \u2192 256)",
+        "parameter_reduction": "very high"
+    },
+    "mlp_changes": {
+        "current_pipeline": [
+            "GlobalAveragePooling (temporal)",
+            "Linear \u2192 LayerNorm \u2192 GELU (256)",
+            "Linear \u2192 GELU (128)",
+            "Linear \u2192 Sigmoid (1)"
+        ],
+        "removed": {
+            "operation": "flatten",
+            "reason": "length-sensitive and over-parameterized"
+        }
+    },
+    "normalization_strategy": {
+        "cnn": "none (residual stability)",
+        "fc": [
+            "LayerNorm after first FC only"
+        ]
+    },
+    "parameter_effect": {
+        "total_params": "dramatically reduced",
+        "memory": "much lower",
+        "training_speed": "faster",
+        "generalization": "improved",
+        "risk": "slightly higher bias, significantly lower variance"
+    },
+    "design_intuition": [
+        "CNN extracts local and mid-range URL patterns",
+        "Global Average Pooling summarizes channel-wise evidence",
+        "MLP acts as a lightweight decision head",
+        "architecture becomes length-invariant and deployment-friendly"
+    ],
+    "forward_flow": [
+        "embedding",
+        "permute (B,L,C \u2192 B,C,L)",
+        "ResidualConvBlock(stride=2) \u00d7 2",
+        "GlobalAveragePooling over time",
+        "fc1 \u2192 LayerNorm \u2192 GELU",
+        "fc2 \u2192 GELU",
+        "head \u2192 sigmoid"
+    ],
+    "recommended_use": [
+        "primary production candidate",
+        "strong baseline for attention pooling variants",
+        "robust evaluation across variable-length URLs"
+    ]
+}

@@ -1,0 +1,8 @@
+{
+    "base_version": "v24",
+    "archeture": {
+        "add": [
+            "added attension pooling"
+        ]
+    }
+}

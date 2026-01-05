@@ -1,0 +1,87 @@
+{
+    "baseline": "url_embed_cnn128_64_32_flat_mlp512_256_ln_gelu_128_head_binary_v14",
+    "version": "v15",
+    "type": "architecture_upgrade",
+    "model_family": "url_embedding_residual_cnn_mlp_classifier",
+    "high_level_change": "Replaced plain Conv1d stack with residual depthwise-separable convolution blocks",
+    "residual_block": {
+        "name": "ResidualConvBlock",
+        "structure": [
+            "parallel depthwise Conv1d branches",
+            "kernel-size configurable (single-kernel used here)",
+            "residual shortcut connection",
+            "ReLU after residual addition"
+        ],
+        "kernel_sizes_used": [
+            3
+        ],
+        "shortcut": "1x1 Conv when channel mismatch",
+        "merge_strategy": "channel concatenation",
+        "normalization": "none",
+        "dropout": "none"
+    },
+    "cnn_changes": {
+        "replaced_layers": [
+            "Conv1d(embed_dim \u2192 128)",
+            "Conv1d(128 \u2192 64)",
+            "Conv1d(64 \u2192 32)"
+        ],
+        "new_layers": [
+            "ResidualConvBlock(embed_dim \u2192 128)",
+            "ResidualConvBlock(128 \u2192 64)",
+            "ResidualConvBlock(64 \u2192 32)"
+        ],
+        "channel_trend": "monotonic_decrease",
+        "design_intuition": [
+            "residual paths preserve low-level lexical signals",
+            "depthwise-style conv reduces noise amplification",
+            "better gradient flow for deeper CNN stacks"
+        ]
+    },
+    "tensor_layout": {
+        "before_cnn": "(B, L, C)",
+        "cnn_format": "(B, C, L)",
+        "after_cnn": "(B, L, C)",
+        "reason": "Conv1d channel-first requirement"
+    },
+    "fc_pipeline": {
+        "flatten_dim": "maxlen * 32",
+        "layers": [
+            "Linear \u2192 LayerNorm \u2192 GELU (512)",
+            "Linear \u2192 LayerNorm \u2192 GELU (256)",
+            "Linear \u2192 GELU (128)",
+            "Linear \u2192 Sigmoid (1)"
+        ]
+    },
+    "normalization_strategy": {
+        "cnn": "none (residual stability preferred)",
+        "fc": [
+            "LayerNorm after fc1",
+            "LayerNorm after fc2"
+        ],
+        "reason": "LayerNorm retained only where it improves convergence"
+    },
+    "forward_flow": [
+        "embedding",
+        "permute (B,L,C \u2192 B,C,L)",
+        "ResidualConvBlock \u00d7 3",
+        "permute (B,C,L \u2192 B,L,C)",
+        "flatten",
+        "fc1 \u2192 LN \u2192 GELU",
+        "fc2 \u2192 LN \u2192 GELU",
+        "fc3 \u2192 GELU",
+        "head \u2192 sigmoid"
+    ],
+    "expected_effects": {
+        "feature_quality": "higher than plain CNN",
+        "gradient_flow": "improved via residual paths",
+        "noise_suppression": "better than expand-compress CNN",
+        "generalization": "improved on hard / adversarial URLs",
+        "compute_cost": "moderate (higher than v14, lower than multi-kernel)"
+    },
+    "design_notes": [
+        "Single-kernel residual blocks used for controlled ablation",
+        "Multi-kernel branches (3/5/7) can be enabled later",
+        "Good foundation for SE or attention-style extensions"
+    ]
+}

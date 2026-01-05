@@ -1,0 +1,177 @@
+[
+    {
+        "model_name": "cnn_5layer_128_256_256_128_64",
+        "shared_layers": {
+            "embedding": {
+            "type": "Embedding_layer",
+            "params": {
+                "vocab_size": 97,
+                "max_len": 128,
+                "d_model": 128,
+                "n_out": 64
+            }
+            },
+
+            "conv1": { "type": "Conv1d", "params": { "in_channels": 64, "out_channels": 128, "kernel_size": 3, "padding": 1 }},
+            "conv2": { "type": "Conv1d", "params": { "in_channels": 128, "out_channels": 256, "kernel_size": 3, "padding": 1 }},
+            "conv3": { "type": "Conv1d", "params": { "in_channels": 256, "out_channels": 256, "kernel_size": 3, "padding": 1 }},
+            "conv4": { "type": "Conv1d", "params": { "in_channels": 256, "out_channels": 128, "kernel_size": 3, "padding": 1 }},
+            "conv5": { "type": "Conv1d", "params": { "in_channels": 128, "out_channels": 64,  "kernel_size": 3, "padding": 1 }},
+
+            "fc1": { "type": "Linear", "params": { "in_features": 8192, "out_features": 128 }},
+            "fc2": { "type": "Linear", "params": { "in_features": 128, "out_features": 64 }}
+        },
+
+        "personal_layers": {
+            "head": { "type": "Linear", "params": { "in_features": 64, "out_features": 1 }}
+        },
+
+        "forward_flow": [
+            "embedding","permute:0,2,1",
+            "conv1","conv2","conv3","conv4","conv5",
+            "flatten","fc1","fc2","head","sigmoid"
+        ]
+    },
+
+    {
+        "model_name": "rescnn_5layer_128_256_256_128_64",
+        "shared_layers": {
+            "embedding": {
+            "type": "Embedding_layer",
+            "params": { "vocab_size": 97, "max_len": 128, "d_model": 128, "n_out": 64 }
+            },
+
+            "conv1": { "type": "ResidualConvBlock", "params": { "in_ch": 64,  "out_ch": 128, "kernel_sizes": [3,5,7], "reduction": 32 }},
+            "conv2": { "type": "ResidualConvBlock", "params": { "in_ch": 128, "out_ch": 256, "kernel_sizes": [3,5,7], "reduction": 32 }},
+            "conv3": { "type": "ResidualConvBlock", "params": { "in_ch": 256, "out_ch": 256, "kernel_sizes": [3,5,7], "reduction": 32 }},
+            "conv4": { "type": "ResidualConvBlock", "params": { "in_ch": 256, "out_ch": 128, "kernel_sizes": [3,5,7], "reduction": 16 }},
+            "conv5": { "type": "ResidualConvBlock", "params": { "in_ch": 128, "out_ch": 64,  "kernel_sizes": [3,5,7], "reduction": 16 }},
+
+            "fc1": { "type": "Linear", "params": { "in_features": 8192, "out_features": 128 }},
+            "fc2": { "type": "Linear", "params": { "in_features": 128, "out_features": 64 }}
+        },
+
+        "personal_layers": {
+            "head": { "type": "Linear", "params": { "in_features": 64, "out_features": 1 }}
+        },
+
+        "forward_flow": [
+            "embedding","permute:0,2,1",
+            "conv1","conv2","conv3","conv4","conv5",
+            "flatten","fc1","fc2","head","sigmoid"
+        ]
+    },
+
+    {
+        "model_name": "cnn_3layer_128_128_64",
+        "shared_layers": {
+            "embedding": {
+            "type": "Embedding_layer",
+            "params": { "vocab_size": 97, "max_len": 128, "d_model": 128, "n_out": 64 }
+            },
+
+            "conv1": { "type": "Conv1d", "params": { "in_channels": 64, "out_channels": 128, "kernel_size": 3, "padding": 1 }},
+            "conv2": { "type": "Conv1d", "params": { "in_channels": 128, "out_channels": 128, "kernel_size": 3, "padding": 1 }},
+            "conv3": { "type": "Conv1d", "params": { "in_channels": 128, "out_channels": 64,  "kernel_size": 3, "padding": 1 }},
+
+            "fc1": { "type": "Linear", "params": { "in_features": 8192, "out_features": 128 }},
+            "fc2": { "type": "Linear", "params": { "in_features": 128, "out_features": 64 }}
+        },
+
+        "personal_layers": {
+            "head": { "type": "Linear", "params": { "in_features": 64, "out_features": 1 }}
+        },
+
+        "forward_flow": [
+            "embedding","permute:0,2,1",
+            "conv1","conv2","conv3",
+            "flatten","fc1","fc2","head","sigmoid"
+        ]
+    },
+
+    {
+        "model_name": "rescnn_3layer_128_128_64",
+        "shared_layers": {
+            "embedding": {
+            "type": "Embedding_layer",
+            "params": { "vocab_size": 97, "max_len": 128, "d_model": 128, "n_out": 64 }
+            },
+
+            "conv1": { "type": "ResidualConvBlock", "params": { "in_ch": 64,  "out_ch": 128, "kernel_sizes": [3,5,7], "reduction": 16 }},
+            "conv2": { "type": "ResidualConvBlock", "params": { "in_ch": 128, "out_ch": 128, "kernel_sizes": [3,5,7], "reduction": 16 }},
+            "conv3": { "type": "ResidualConvBlock", "params": { "in_ch": 128, "out_ch": 64,  "kernel_sizes": [3,5,7], "reduction": 16 }},
+
+            "fc1": { "type": "Linear", "params": { "in_features": 8192, "out_features": 128 }},
+            "fc2": { "type": "Linear", "params": { "in_features": 128, "out_features": 64 }}
+        },
+
+        "personal_layers": {
+            "head": { "type": "Linear", "params": { "in_features": 64, "out_features": 1 }}
+        },
+
+        "forward_flow": [
+            "embedding","permute:0,2,1",
+            "conv1","conv2","conv3",
+            "flatten","fc1","fc2","head","sigmoid"
+        ]
+    },
+
+    {
+        "model_name": "cnn_5layer_32_32_32_32_64",
+        "shared_layers": {
+            "embedding": {
+            "type": "Embedding_layer",
+            "params": { "vocab_size": 97, "max_len": 128, "d_model": 128, "n_out": 64 }
+            },
+
+            "conv1": { "type": "Conv1d", "params": { "in_channels": 64, "out_channels": 32, "kernel_size": 3, "padding": 1 }},
+            "conv2": { "type": "Conv1d", "params": { "in_channels": 32, "out_channels": 32, "kernel_size": 3, "padding": 1 }},
+            "conv3": { "type": "Conv1d", "params": { "in_channels": 32, "out_channels": 32, "kernel_size": 3, "padding": 1 }},
+            "conv4": { "type": "Conv1d", "params": { "in_channels": 32, "out_channels": 32, "kernel_size": 3, "padding": 1 }},
+            "conv5": { "type": "Conv1d", "params": { "in_channels": 32, "out_channels": 64, "kernel_size": 3, "padding": 1 }},
+
+            "fc1": { "type": "Linear", "params": { "in_features": 8192, "out_features": 128 }},
+            "fc2": { "type": "Linear", "params": { "in_features": 128, "out_features": 64 }}
+        },
+
+        "personal_layers": {
+            "head": { "type": "Linear", "params": { "in_features": 64, "out_features": 1 }}
+        },
+
+        "forward_flow": [
+            "embedding","permute:0,2,1",
+            "conv1","conv2","conv3","conv4","conv5",
+            "flatten","fc1","fc2","head","sigmoid"
+        ]
+    },
+
+    {
+        "model_name": "rescnn_5layer_32_32_32_32_64",
+        "shared_layers": {
+            "embedding": {
+            "type": "Embedding_layer",
+            "params": { "vocab_size": 97, "max_len": 128, "d_model": 128, "n_out": 64 }
+            },
+
+            "conv1": { "type": "ResidualConvBlock", "params": { "in_ch": 64, "out_ch": 32, "kernel_sizes": [3,5,7], "reduction": 8 }},
+            "conv2": { "type": "ResidualConvBlock", "params": { "in_ch": 32, "out_ch": 32, "kernel_sizes": [3,5,7], "reduction": 8 }},
+            "conv3": { "type": "ResidualConvBlock", "params": { "in_ch": 32, "out_ch": 32, "kernel_sizes": [3,5,7], "reduction": 8 }},
+            "conv4": { "type": "ResidualConvBlock", "params": { "in_ch": 32, "out_ch": 32, "kernel_sizes": [3,5,7], "reduction": 8 }},
+            "conv5": { "type": "ResidualConvBlock", "params": { "in_ch": 32, "out_ch": 64, "kernel_sizes": [3,5,7], "reduction": 8 }},
+
+            "fc1": { "type": "Linear", "params": { "in_features": 8192, "out_features": 128 }},
+            "fc2": { "type": "Linear", "params": { "in_features": 128, "out_features": 64 }}
+        },
+
+        "personal_layers": {
+            "head": { "type": "Linear", "params": { "in_features": 64, "out_features": 1 }}
+        },
+
+        "forward_flow": [
+            "embedding","permute:0,2,1",
+            "conv1","conv2","conv3","conv4","conv5",
+            "flatten","fc1","fc2","head","sigmoid"
+        ]
+    }
+
+]

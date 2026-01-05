@@ -1,0 +1,77 @@
+{
+    "baseline": "url_embed_flat_mlp512_256_gelu_no_norm_binary_v11",
+    "versioning": {
+        "action": "overwrite",
+        "discarded_versions": [
+            "v12_old"
+        ],
+        "current_version": "v12"
+    },
+    "type": "modify_model",
+    "model_family": "url_embedding_mlp_classifier",
+    "shared_layer_changes": [
+        {
+            "op": "add",
+            "layer": "LayerNorm",
+            "position": "after fc1",
+            "features": 512,
+            "reason": "stabilize large flattened embedding activations"
+        },
+        {
+            "op": "add",
+            "layer": "LayerNorm",
+            "position": "after fc2",
+            "features": 256,
+            "reason": "improve convergence and accuracy"
+        }
+    ],
+    "personal_layer_changes": [
+        {
+            "op": "keep",
+            "layer": "fc3",
+            "features": "256 \u2192 128",
+            "activation": "GELU",
+            "note": "no normalization to preserve decision boundary sharpness"
+        }
+    ],
+    "architecture": {
+        "shared": [
+            "Embedding(vocab_size, max_len \u2192 embed_dim)",
+            "Flatten(sequence)",
+            "Linear(maxlen*embed_dim \u2192 512) \u2192 LayerNorm \u2192 GELU",
+            "Linear(512 \u2192 256) \u2192 LayerNorm \u2192 GELU"
+        ],
+        "personal": [
+            "Linear(256 \u2192 128) \u2192 GELU",
+            "Linear(128 \u2192 1) \u2192 Sigmoid"
+        ]
+    },
+    "forward_flow": [
+        "x = embedding(x)",
+        "x = flatten(x)",
+        "x = fc1 \u2192 LayerNorm \u2192 GELU",
+        "x = fc2 \u2192 LayerNorm \u2192 GELU",
+        "x = fc3 \u2192 GELU",
+        "x = head \u2192 sigmoid"
+    ],
+    "regularization": {
+        "normalization": "LayerNorm (shared layers only)",
+        "dropout": "disabled",
+        "rationale": "dropout reduced accuracy; LN provides sufficient stabilization"
+    },
+    "training_observations": {
+        "accuracy": "improved vs v11",
+        "stability": "high",
+        "latency": "moderate increase vs no-norm model"
+    },
+    "design_intent": [
+        "balance stability and final decision sharpness",
+        "avoid over-regularization near output head",
+        "production-safe dense MLP for URL classification"
+    ],
+    "notes": [
+        "This version supersedes all prior v12 definitions",
+        "Recommended LR slightly lower than v11",
+        "Good candidate for final baseline comparison"
+    ]
+}

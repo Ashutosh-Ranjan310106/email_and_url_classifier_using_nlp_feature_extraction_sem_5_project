@@ -1,0 +1,31 @@
+run:
+  name: temp_lstmv1100.25
+  timestamp: '2025-12-31T00:39:24.267076'
+  device: cuda
+training:
+  batch_size: 1024
+  num_train_batches: 397
+  num_val_batches: 50
+  dataset_name: Dataset 4 (kaggels/taruntiwarihp/phishing-site-urls)
+optimizers:
+  global:
+    type: NAdam
+    lr: 0.001
+    betas: &id001
+    - 0.9
+    - 0.999
+    weight_decay: 1.0e-06
+  personal:
+    type: NAdam
+    lr: 0.001
+    betas: *id001
+    weight_decay: 3.0e-06
+schedulers:
+  global:
+    type: ReduceLROnPlateau
+    factor: 0.5
+    patience: 3
+  personal:
+    type: ReduceLROnPlateau
+    factor: 0.5
+    patience: 3

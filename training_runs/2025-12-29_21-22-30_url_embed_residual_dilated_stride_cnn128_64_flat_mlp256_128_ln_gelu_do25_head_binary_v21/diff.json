@@ -1,0 +1,88 @@
+{
+    "baseline": "url_embed_residual_stride_cnn128_64_ds_flat_mlp256_128_ln_gelu_head_binary_v18",
+    "version": "v21",
+    "type": "receptive_field_expansion",
+    "model_family": "url_embedding_residual_cnn_mlp_classifier",
+    "high_level_change": "Introduced dilated convolutions inside residual CNN blocks to expand temporal receptive field without increasing depth or parameters",
+    "cnn_architecture": {
+        "blocks": [
+            {
+                "in": "embed_dim",
+                "out": 128,
+                "kernel": 3,
+                "stride": 2,
+                "dilations": [
+                    1,
+                    2
+                ],
+                "change": "parallel dilated convolutions"
+            },
+            {
+                "in": 128,
+                "out": 64,
+                "kernel": 3,
+                "stride": 2,
+                "dilations": [
+                    1,
+                    2
+                ],
+                "change": "parallel dilated convolutions"
+            }
+        ],
+        "removed_blocks": [
+            {
+                "in": 64,
+                "out": 32,
+                "stride": 2
+            }
+        ],
+        "sequence_reduction": "L \u2192 L/4",
+        "channel_strategy": "moderate_downscaling",
+        "receptive_field": "expanded via dilation"
+    },
+    "flatten_projection": {
+        "unchanged": "maxlen * 64 // 4 \u2192 256",
+        "reason": "isolate effect of dilation from dense-layer capacity"
+    },
+    "mlp_structure": {
+        "pipeline": [
+            "Linear \u2192 LayerNorm \u2192 GELU (256)",
+            "Linear \u2192 GELU (128)",
+            "Linear \u2192 Sigmoid (1)"
+        ],
+        "unchanged_from": "v18"
+    },
+    "normalization_strategy": {
+        "cnn": "none (residual connections + dilation)",
+        "fc": [
+            "LayerNorm after first FC only"
+        ]
+    },
+    "parameter_effect": {
+        "total_params": "approximately unchanged",
+        "compute": "slightly higher (parallel dilations)",
+        "memory": "similar to v18",
+        "risk": "lower bias, slightly higher variance"
+    },
+    "design_intuition": [
+        "URLs contain long-range character dependencies",
+        "Dilation allows capturing global patterns without deeper CNNs",
+        "Residual connections stabilize multi-scale feature learning",
+        "Keeps ablation fair by holding MLP capacity constant"
+    ],
+    "forward_flow": [
+        "embedding",
+        "permute (B,L,C \u2192 B,C,L)",
+        "ResidualConvBlock(dilations=[1,2], stride=2) x 2",
+        "permute (B,C,L \u2192 B,L,C)",
+        "flatten",
+        "fc1 \u2192 LayerNorm \u2192 GELU",
+        "fc2 \u2192 GELU",
+        "head \u2192 sigmoid"
+    ],
+    "recommended_use": [
+        "receptive-field ablation vs standard CNN",
+        "URL pattern modeling with long substrings",
+        "comparison against GAP and attention pooling variants"
+    ]
+}
