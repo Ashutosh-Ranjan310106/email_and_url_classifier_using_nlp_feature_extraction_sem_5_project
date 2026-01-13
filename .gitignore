@@ -2,3 +2,5 @@ training_runs/**/graphs/
 training_runs/**/*.safetensors
 **/__pycache__/
 **/*.pyc
+training_runs/
+runs/
